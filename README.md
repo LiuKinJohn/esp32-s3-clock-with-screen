@@ -1,82 +1,99 @@
 # ESP32-S3 Clock with Screen
 
-用于 **OSPTEK ESP32-S3-Touch-LCD-4 / ESP32-TPCB4** 的触摸桌面看板固件，包含时钟、港铁 ETA、附近航班地图雷达和设置四个页面。
+A touchscreen desktop dashboard for the **OSPTEK ESP32-S3-Touch-LCD-4 / ESP32-TPCB4**, with four pages: clock, Hong Kong MTR arrivals, nearby aircraft radar, and settings.
 
-## 当前硬件
+## Hardware
 
-| 项目 | 型号 / 配置 |
+| Item | Specification |
 | --- | --- |
-| 模组 | ESP32-S3-WROOM-1-N16R8 |
-| 存储 | 16 MB Flash，8 MB Octal PSRAM |
-| 屏幕 | 约 3.95 英寸、480 × 480，ST7701S RGB，YDP395B003-V4 |
-| 触摸 | FT5x06 电容触摸 |
-| USB 串口 | CH340K |
-| 开发环境 | ESP-IDF 5.5.3，LVGL 9.2.2 |
+| Module | ESP32-S3-WROOM-1-N16R8 |
+| Memory | 16 MB Flash, 8 MB Octal PSRAM |
+| Display | Approximately 3.95 inches, 480 x 480, ST7701S RGB, YDP395B003-V4 |
+| Touch | FT5x06 capacitive touch |
+| USB serial | CH340K |
+| Framework | ESP-IDF 5.5.3, LVGL 9.2.2 |
 
-只记录当前设备，不保证其他 ESP32-S3 开发板的屏幕引脚、时序或内存配置兼容。
+This project targets the board above. Other ESP32-S3 boards may require different pin assignments, display timings, or memory settings.
 
-## 功能
+## Features
 
-- 时钟：绿色错位四位大字、黑底蓝色重叠大字两种样式；12/24 小时制及前导零，线性淡入淡出。
-- 蓝色时钟支持 IP 粗定位地点行、定位中的图标闪烁；联网状态成功后约 10 秒渐隐，断网或未校时保持提示。
-- 触摸滑动切页；分页指示点触摸后显示，约 3 秒无操作后渐隐。
-- 港铁 ETA：金钟港岛线、上水东铁线，独立切换站点与方向，记住每站上一次方向；PIDS 风格、繁中显示、尾班后提示和香港天气。
-- 航班：基于网络或手动经纬度定位，实心飞机图标、航迹方向、航班号、机型、高度和速度；点击查看详情，15 秒后收起。
-- 雷达数据约 30 秒刷新，间隔内外推位置，大偏差时淡出淡入。标签自动避让、按相对位置对齐，字号五档。
-- 半径 20/50/70/100/120/200 km；显示数量 5/8/10/13/15。底图包含低对比度地名，保留地图署名。
-- 设置：中英语言、主题、亮度、息屏、时区、自动校时、时钟样式、ETA 站向及航班选项；配置保存到设备 NVS。
+### Clock
 
-## 直接刷写
+- Two oversized clock faces: staggered green digits and overlapping blue digits on black.
+- 12/24-hour formats with leading zeros and linear fade transitions.
+- A location label on the blue face, with a blinking icon while locating.
+- Network status fades out about 10 seconds after connecting; connection or time-sync problems remain visible.
+- Swipe between pages. Page indicators appear on touch and fade after about 3 seconds of inactivity.
 
-在仓库 Releases 下载 `esp32-s3-clock-with-screen-v1.0.0-flash.zip`，解压后按其中的 `FLASHING.md` 操作。包中只有 bootloader、分区表、应用固件及说明、SHA256 清单，不包含个人配置或 NVS 镜像。
+### MTR Arrivals
 
-首次使用通过设备配网热点 `ESP32-Clock-Setup`（通用密码 `12345678`）访问 `http://192.168.4.1`，填写自己的 Wi-Fi。请在可信环境配网。IP 定位失败时在配网页填写经纬度；IP 定位不是 GPS。浏览器定位可能受安全上下文限制。
+- Admiralty on the Island Line and Sheung Shui on the East Rail Line.
+- Separate station and direction selectors, remembering the last direction for each station.
+- PIDS-style arrival information with Traditional Chinese text, an end-of-service notice, and Hong Kong weather.
 
-## 从源码构建
+### Aircraft Radar
 
-使用 ESP-IDF **5.5.3** 的已初始化终端。Windows 建议放在无空格、无中文的短路径。初始化方法依安装方式而异，仓库不硬编码开发者磁盘位置。
+- Nearby aircraft centered on an IP-based location or manually entered coordinates.
+- Solid aircraft icons oriented along their tracks, with flight number, aircraft type, altitude, and speed.
+- Tap an aircraft to expand its details; the panel returns to its compact form after 15 seconds.
+- Data refreshes approximately every 30 seconds, with estimated movement between updates and fade transitions for large position corrections.
+- Automatic label placement, alignment relative to each aircraft, and five text-size options.
+- Search radii: **20, 50, 70, 100, 120, or 200 km**.
+- Aircraft display limits: **5, 8, 10, 13, or 15**.
+- A map background with subtle place labels and visible map attribution.
+
+### Settings
+
+Chinese/English interface, theme, brightness, screen timeout, time zone, automatic time synchronization, clock format and style, MTR station/direction, and radar preferences. Settings are saved in the device's NVS.
+
+## Flash a Release
+
+Download `esp32-s3-clock-with-screen-v1.0.0-flash.zip` from [Releases](https://github.com/LiuKinJohn/esp32-s3-clock-with-screen/releases), extract it, and follow the included [FLASHING.md](FLASHING.md). The package contains the bootloader, partition table, application firmware, instructions, and SHA256 checksums. It does not include personal settings or an NVS image.
+
+For initial setup, connect to the device's `ESP32-Clock-Setup` hotspot using the default password `12345678`, then open `http://192.168.4.1` to configure your Wi-Fi. Set up the device on a trusted network. If IP-based location fails, enter coordinates on the setup page. IP location is approximate, not GPS; browser location access may be restricted by secure-context requirements.
+
+## Build from Source
+
+Use an initialized **ESP-IDF 5.5.3** terminal. On Windows, use a short ASCII project path without spaces.
 
 ```powershell
 Copy-Item sdkconfig.release sdkconfig
 idf.py build
-# PORT 替换为实际串口，如 COM7
+# Replace PORT with your device's serial port, such as COM7.
 idf.py -p PORT flash monitor
 ```
 
-`sdkconfig.release` 是该固件完整构建配置，目标已是 esp32s3。不要先执行会重置配置的 `set-target`，不要用旧配置替代。`sdkconfig.defaults` 保留原工程默认值，精确恢复请优先用完整配置。
+`sdkconfig.release` contains the complete release configuration, including the esp32s3 target. Do not first run `set-target`, which resets the configuration. Use this complete configuration rather than an old local config or only `sdkconfig.defaults`.
 
-依赖由 `main/idf_component.yml` 和 `dependencies.lock` 固定，首次构建需要联网下载；`managed_components/`、`build/` 不入 Git。`main/` 已包含编译所需字体和数字图像 C 资源，无需重新生成字体。
+Dependencies are pinned by `main/idf_component.yml` and `dependencies.lock` and downloaded on the first build. Generated `managed_components/` and `build/` directories are not tracked. The required font and digit-image C resources are already included in `main/`.
 
 ```text
-main/                 应用、驱动封装、界面、网络模块及生成资源
-tools/                可选资源生成与比较脚本（含历史中间结果）
-sdkconfig.release     当前完整配置
-sdkconfig.defaults    原工程默认配置
-dependencies.lock     组件锁定版本
-partitions.csv        Flash 分区表
+main/                 Application, display integration, UI, networking, and generated assets
+tools/                Optional asset generators and comparison scripts, including older intermediates
+sdkconfig.release     Complete release configuration
+sdkconfig.defaults    Original project defaults
+dependencies.lock     Pinned component versions
+partitions.csv        Flash partition layout
 ```
 
-## 可选字体生成
+## Optional Font Generation
 
-普通编译不需要 Python Pillow、Node 或本机字体。可选脚本需要 Pillow、lv_font_conv 等，以及自行取得且允许使用的源字体。蓝色数字生成器从环境变量 `BLUE_CLOCK_FONT` 读取字体路径。
+Normal builds do not require Pillow, Node.js, or locally installed source fonts. Optional generators require tools such as Pillow and lv_font_conv, plus appropriately licensed source fonts. The blue clock generator reads its font path from `BLUE_CLOCK_FONT`.
 
-部分历史字体子集和转换工具临时目录已不可用，不能保证逐字节重建资源；`tools/generated_fonts/` 是旧中间结果，**不得直接覆盖当前 `main/` 字体**。原始本机字体文件没有随仓库上传。参见 `THIRD_PARTY_NOTICES.md`。
+Some original font subsets and temporary conversion tools are no longer available, so byte-for-byte asset regeneration is not guaranteed. Files in `tools/generated_fonts/` are older intermediates: **do not use them to overwrite the current fonts in `main/`**. Original local font files are not distributed. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
-## 数据与隐私
+## Data and Privacy
 
-固件当前使用 ip-api（粗定位）、港铁开放 ETA、香港天文台、ADS-B Exchange 类格式的 ADSB.lol 航班端点、MapMap 静态地图和 Overpass 地名查询。当前未实现私人航班 API Key 设置。
+The firmware uses ip-api for approximate location, MTR open arrival data, Hong Kong Observatory weather, ADSB.lol aircraft data, MapMap static maps, and Overpass place-name queries. A custom aircraft API-key setting is not currently implemented.
 
-定位与地图请求会把公网 IP 或查询中心位置发送给相应服务，航班查询同样携带附近范围。服务可用性、限制和精度由提供方决定。地图署名不可隐藏。此看板不用于航行、空管或其他安全关键用途。
+Location, map, and aircraft requests disclose the public IP address or query coordinates to the respective services. Availability, limits, and accuracy depend on those providers. Keep map attribution visible. This dashboard is not intended for navigation, air traffic control, or other safety-critical use.
 
-仓库不含个人 Wi-Fi、API Key、位置记录、串口日志、全 Flash dump、本机用户路径或 IDE 设置。热点通用密码不是私人 Wi-Fi 密码。分享设备前如需清除个人配置，应自行确认备份后处理 NVS；日常刷写不默认擦除配置。
+The archive excludes personal Wi-Fi credentials, API keys, location records, serial logs, full-flash dumps, private user paths, and IDE settings. The default setup hotspot password is not a personal Wi-Fi password. Normal flashing does not erase saved settings; back up and deliberately clear NVS before sharing a configured device when needed.
 
-## 当前验证与局限
+## Status and Limitations
 
-- 归档于 2026-09-05，保留最后一次地图地名透明度调整后的固件；现有工程增量构建通过，未在归档时重新刷机。
-- 已有 70 km 地图/地名加载和航班、ETA 更新的短时实机记录；不代表所有半径或长期稳定性已验证。
-- 20 km 完整 JPEG 解码修复已编译，仍需实机确认；固定 zoom 底图与雷达半径投影的比例一致性也需回归。
-- 网络超时、限流仍可能发生；地图失败后重试，单独地名查询失败暂时退回位置名，没有独立重试计时器。
-- 少见中文/繁体地名可能缺字；无持久化地图磁盘缓存，重启需重新加载。
-- 显示同步、双缓冲、PSRAM 和任务栈经过多轮调整；不要为增大并发随意修改，需实机检查滑动、设置菜单及地图加载。
+- The archived firmware passes an incremental build and has limited on-device testing; long-term stability and all search radii are not fully verified.
+- The 20 km map path and map-to-aircraft scale alignment still need on-device checks.
+- Network timeouts or rate limits may delay updates. Place labels can fall back to the location name or lack uncommon Chinese characters; maps reload after a restart.
 
-当前版本是个人设备的功能存档，不是通用成品 SDK。第三方组件与字体来源保留各自权利声明，不统一声明为单一开源许可证。
+This is a firmware archive for the specified board, not a universal SDK. Third-party code and fonts retain their respective rights and notices; the archive does not apply a single license to all resources.
