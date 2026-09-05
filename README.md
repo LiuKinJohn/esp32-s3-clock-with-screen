@@ -97,3 +97,5 @@ The archive excludes personal Wi-Fi credentials, API keys, location records, ser
 - Network timeouts or rate limits may delay updates. Place labels can fall back to the location name or lack uncommon Chinese characters; maps reload after a restart.
 
 This is a firmware archive for the specified board, not a universal SDK. Third-party code and fonts retain their respective rights and notices; the archive does not apply a single license to all resources.
+
+If you have any questions, please contact this email: silicium@foxmail.com
