@@ -1,0 +1,44 @@
+idf_component_register(
+    SRCS
+        "main.c"
+        "app_init.c"
+        "app_settings.c"
+        "network_manager.c"
+        "network_http_lock.c"
+        "transit_manager.c"
+        "flight_manager.c"
+        "map_manager.c"
+        "clock_ui.c"
+        "lv_font_chinese_16.c"
+        "lv_font_ui_14.c"
+        "lv_font_ui_16.c"
+        "lv_font_ui_20.c"
+        "lv_font_ui_28.c"
+        "lv_font_ui_48.c"
+        "clock_digit_images.c"
+        "blue_clock_digit_images.c"
+        "lv_font_pids_16.c"
+        "lv_font_pids_20.c"
+        "lv_font_pids_28.c"
+        "lvgl_port.c"
+    INCLUDE_DIRS
+        "."
+    REQUIRES
+        driver
+        esp_lcd
+        esp_lcd_st7701
+        esp_lcd_touch_ft5x06
+        esp_lcd_panel_io_additions
+        lvgl
+        esp_wifi
+        esp_netif
+        esp_event
+        esp_http_server
+        esp_http_client
+        mbedtls
+        json
+        nvs_flash
+        lwip
+)
+
+target_compile_definitions(${COMPONENT_LIB} PRIVATE LV_LVGL_H_INCLUDE_SIMPLE)

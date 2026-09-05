@@ -1,0 +1,60 @@
+menu "Example Configuration"
+    menu "Touch Controller"
+        config EXAMPLE_LCD_TOUCH_CONTROLLER_FT5X06
+            bool "FT5x06 touch controller (I2C)"
+            default y
+            help
+                This board uses FT5x06. I2C pins and initialization are in app_init.c.
+                Uncheck only if you remove touch support in firmware.
+    endmenu
+
+    menu "Display"
+        config EXAMPLE_LCD_RGB_BOUNCE_BUFFER_HEIGHT
+            int "RGB Bounce buffer height"
+            default 16
+            help
+                Height of bounce buffer. The width of the buffer is the same as that of the LCD.
+
+        config EXAMPLE_LVGL_PORT_TASK_MAX_DELAY_MS
+            int "LVGL timer task maximum delay (ms)"
+            default 500
+            range 2 2000  # Example range, adjust as needed
+            help
+            The maximum delay of the LVGL timer task, in milliseconds.
+
+        config EXAMPLE_LVGL_PORT_TASK_MIN_DELAY_MS
+            int "LVGL timer task minimum delay (ms)"
+            default 1
+            range 1 100  # Example range, adjust as needed
+            help
+            The minimum delay of the LVGL timer task, in milliseconds.
+
+        config EXAMPLE_LVGL_PORT_TASK_PRIORITY
+            int "LVGL task priority"
+            default 5
+            help
+                The Board Support Package will create a task that will periodically handle LVGL operation in lv_timer_handler().
+
+        config EXAMPLE_LVGL_PORT_TASK_STACK_SIZE_KB
+            int "LVGL task stack size (KB)"
+            default 8
+            help
+                Size(KB) of LVGL task stack.
+
+        config EXAMPLE_LVGL_PORT_TASK_CORE
+            int "LVGL timer task core"
+            default -1
+            range -1 1
+            help
+            The core of the LVGL timer task.
+            Set to -1 to not specify the core.
+            Set to 1 only if the SoCs support dual-core, otherwise set to -1 or 0.
+
+        config EXAMPLE_LVGL_PORT_TICK
+            int "LVGL tick period"
+            default 2
+            range 1 100
+            help
+                Period of LVGL tick timer.
+    endmenu
+endmenu
